@@ -1,0 +1,26 @@
+# copy config.yml.example to config.yml and edit that to match your settings
+# don't overwrite config.yml!
+---
+# r_version should be a string like  R-x.y.z  (example:  R-3.1.0), or one of the following:
+# R-devel R-alpha R-beta R-patched R-rc 
+r_version: R-3.1.0
+# use_devel should be TRUE or FALSE, also indicates whether to pull from trunk
+use_devel: TRUE
+# set to e.g. 3.0
+bioc_version: 3.0
+svn_password: XXXXXXXX
+
+## AWS section:
+# see https://github.com/mitchellh/vagrant-aws/#quick-start
+access_key_id:  "XXXXX"
+secret_access_key:  "YYYYY"
+keypair_name:  "bioc-default"
+security_groups:  "bioc_default"
+ami:  "ami-ZZZZZ"
+private_key_path:  "/path/to/bioc-default.pem"
+instance_type:  "m1.large"
+tags: {Name: some name}
+
+
+# don't overwrite config.yml!
+>>>>>>> 9fff442ba964aa1055cf033948abb456e4354c0b
