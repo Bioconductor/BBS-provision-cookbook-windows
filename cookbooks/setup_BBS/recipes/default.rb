@@ -25,7 +25,7 @@ directory "/home/biocbuild/.BBS" do
     action :create
 end
 
-%w(log MEAT0 NodeInfo svninfo meat R).each do |dir|
+%w(log NodeInfo svninfo meat R).each do |dir|
     directory "#{bbsdir}/#{dir}" do
         owner "biocbuild"
         group "biocbuild"
@@ -55,13 +55,54 @@ directory "/root/.subversion/servers" do
     mode "0777"
 end
 
+execute "setup svn auth" do
+    cwd "/home/biocbuild"
+    user "biocbuild"
+    command "tar zxf /vagrant/svnauth.tar.gz"
+end
+
+execute "setup svn auth2" do
+    cwd "/root"
+    user "root"
+    command "tar zxf /vagrant/svnauth.tar.gz"
+end
+
+
+# execute "atest" do
+#     user "biocbuild"
+#     environment({"SVN_PASS" => yamlconfig['svn_password']})
+#     #command "svn co --non-interactive --no-auth-cache --username biocbuild --password $SVN_PASS #{svn_meat_url} MEAT0"
+#     cwd "#{bbsdir}"
+#     command "whoami > whoami.txt"
+# ####uncomment_this    not_if {File.exists? "#{bbsdir}/MEAT0"}
+#     # rely on STAGE1 to 'svn up' MEAT0
+# end
+
+# subversion "check out meat" do
+#     repository svn_meat_url
+#     #revision "HEAD__"
+#     destination "#{bbsdir}/MEAT0"
+#     action :checkout
+#     user "biocbuild"
+#     svn_username "biocbuild"
+#     svn_password yamlconfig['svn_password']
+# end
+
+
+execute "this is a bad idea" do
+    # ... but it makes svn happy below. don't know
+    # why biocbuild needs to see root's svn credentials
+    user "root"
+    command "chmod -R a+rx /root"
+end
 
 execute "checkout meat" do
-    environment({"SVN_PASS" => yamlconfig['svn_password']})
-    command "svn co --non-interactive --username biocbuild --password $SVN_PASS #{svn_meat_url} MEAT0"
-    cwd "#{bbsdir}"
     user "biocbuild"
-####uncomment_this    not_if {File.exists? "#{bbsdir}/MEAT0"}
+    environment({"SVN_PASS" => yamlconfig['svn_password']})
+    command "svn checkout --non-interactive --username biocbuild --password $SVN_PASS #{svn_meat_url} MEAT0"
+    cwd "#{bbsdir}"
+    not_if {File.exists? "#{bbsdir}/MEAT0"}
+    timeout 21600
     # rely on STAGE1 to 'svn up' MEAT0
 end
 
@@ -76,5 +117,6 @@ end
 # end
 
 # check out (forked) BBS
+# from git@zin1:/home/git/BBS-fork.git
 # set machine name in config.yml, make sure BBS knows about it 
 # and sees it as the main builder

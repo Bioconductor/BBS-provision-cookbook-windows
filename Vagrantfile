@@ -25,7 +25,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--ioapic", "on"]
   end  
 
-# DON'T COMMIT THIS SECRET STUFF!:
 # start me with 
 # vagrant up --provider=aws
 # if you want to run on aws
