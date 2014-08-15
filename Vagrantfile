@@ -19,7 +19,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "joscarsson/ubuntu-trusty64-chef"
 
-  config.vm.provider :virtualbox do |vb|
+  require 'time'
+  timezone = 'Etc/GMT' + ((Time.zone_offset(Time.now.zone)/60)/60).to_s
+  config.vm.provision :shell, :inline => "if [ $(grep -c UTC /etc/timezone) -gt 0 ]; then echo \"#{timezone}\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata; fi"
+
+
+  config.vm.hostname = "bbsvm" # not sure if this will work on AWS
+
+  config.vm.provider :virtualbox do |vb, override|
+    override.vm.network "forwarded_port", guest: 80, host: 8066
+
     #vb.customize ["modifyvm", :id, "--memory", "2048"]
     vb.customize ["modifyvm", :id, "--cpus", "2"]   
     vb.customize ["modifyvm", :id, "--ioapic", "on"]

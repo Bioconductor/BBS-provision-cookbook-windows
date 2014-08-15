@@ -1,2 +1,4 @@
 config.yml
 svnauth.tar.gz
+id_rsa
+.vagrant/
