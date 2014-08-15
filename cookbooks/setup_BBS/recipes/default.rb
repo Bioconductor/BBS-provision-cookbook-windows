@@ -5,6 +5,12 @@ yamlconfig = YAML.load_file "/vagrant/config.yml"
 rmajor = yamlconfig["r_version"].sub(/^R-/, "").split("").first
 
 
+execute "change time zone" do
+    user "root"
+    command "echo 'America/Los_Angeles' > /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    only_if "egrep -q 'UTC|GMT' /etc/timezone"
+end
+
 user "biocbuild" do
     supports :manage_home => true
     home "/home/biocbuild"
@@ -37,7 +43,7 @@ end
     end
 end
 
-%W(src public_html public_html/BBS, public_html/BBS/#{yamlconfig['bioc_version']} public_html/BBS/#{yamlconfig['bioc_version']}/bioc).each do |dir|
+%W(src public_html public_html/BBS public_html/BBS/#{yamlconfig['bioc_version']} public_html/BBS/#{yamlconfig['bioc_version']}/bioc).each do |dir|
     directory "/home/biocbuild/#{dir}" do
         owner "biocbuild"
         group "biocbuild"
@@ -45,6 +51,10 @@ end
         action :create
     end
 
+end
+
+link "/var/www/html/BBS" do
+    to "/home/biocbuild/BBS"
 end
 
 
@@ -125,7 +135,7 @@ end
     libopenmpi-dev openmpi-bin mpi-default-bin openmpi-common
     libexempi3 openmpi-checkpoint python-mpi4py texlive-science
     texlive-bibtex-extra texlive-fonts-extra fortran77-compiler gfortran
-    libreadline-dev libx11-dev libxt-dev texinfo
+    libreadline-dev libx11-dev libxt-dev texinfo apache2
 ).each do |pkg|
     package pkg do
         # this might timeout, but adding a 'timeout' here 
