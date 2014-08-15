@@ -237,3 +237,6 @@ end
 # 45 08 * * * cd /home/biocbuild/BBS/3.0/bioc/bbsvm && ./postrun.sh >>/home/biocbuild/bbs-3.0-bioc/log/bbsvm.log 2>&1
 
 
+# add USER=biocbuild to crontab
+# copy key to ~/.BBS and make sure corresponding public key is
+# in the right place
