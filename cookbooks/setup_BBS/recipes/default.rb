@@ -160,6 +160,36 @@ remote_file "copy ssh key" do
     not_if {File.exists? "/home/biocbuild/.ssh/id_rsa"}
 end
 
+remote_file "copy ssh key2" do
+    path "/home/biocbuild/.BBS/id_rsa"
+    source "file:///vagrant/id_rsa"
+    owner "biocbuild"
+    group "biocbuild"
+    mode 0400
+    not_if {File.exists? "/home/biocbuild/.BBS/id_rsa"}
+end
+
+remote_file "copy ssh config" do
+    path "/home/biocbuild/.ssh/config"
+    source "file:///vagrant/config"
+    owner "biocbuild"
+    group "biocbuild"
+    mode 0755
+end
+
+execute "add public key" do
+    user "biocbuild"
+    command "cat /vagrant/id_rsa.pub >> /home/biocbuild/.ssh/authorized_keys"
+    not_if "grep 'biocbuild@bbsvm' /home/biocbuild/.ssh/authorized_keys"
+end
+
+# note, this wipes out crontab (but should only be run once)
+execute "add USER to crontab" do
+    user "biocbuild"
+    command "echo 'USER=biocbuild' | crontab -"
+    not_if "crontab -l|grep 'USER=biocbuild'"
+end
+
 execute "check out forked BBS" do
     user "biocbuild"
     cwd "/home/biocbuild"
