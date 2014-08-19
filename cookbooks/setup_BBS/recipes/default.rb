@@ -54,7 +54,7 @@ end
 end
 
 link "/var/www/html/BBS" do
-    to "/home/biocbuild/BBS"
+    to "/home/biocbuild/public_html/BBS"
 end
 
 
@@ -266,7 +266,5 @@ end
 ## IMPORTANT: Make sure this is started AFTER 'biocbuild' has finished its "run.sh" job on ALL other nodes!
 # 45 08 * * * cd /home/biocbuild/BBS/3.0/bioc/bbsvm && ./postrun.sh >>/home/biocbuild/bbs-3.0-bioc/log/bbsvm.log 2>&1
 
+# put R in user path?
 
-# add USER=biocbuild to crontab
-# copy key to ~/.BBS and make sure corresponding public key is
-# in the right place
