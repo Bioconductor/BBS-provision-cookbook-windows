@@ -135,7 +135,9 @@ end
     libopenmpi-dev openmpi-bin mpi-default-bin openmpi-common
     libexempi3 openmpi-checkpoint python-mpi4py texlive-science
     texlive-bibtex-extra texlive-fonts-extra fortran77-compiler gfortran
-    libreadline-dev libx11-dev libxt-dev texinfo apache2
+    libreadline-dev libx11-dev libxt-dev texinfo apache2 libxml2-dev
+    libcurl4-openssl-dev libcurl4-nss-dev
+libcurl4-gnutls-dev
 ).each do |pkg|
     package pkg do
         # this might timeout, but adding a 'timeout' here 
