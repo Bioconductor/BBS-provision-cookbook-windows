@@ -53,9 +53,6 @@ end
 
 end
 
-link "/var/www/html/BBS" do
-    to "/home/biocbuild/public_html/BBS"
-end
 
 
 base_url = "https://hedgehog.fhcrc.org/bioconductor"
@@ -146,6 +143,11 @@ libcurl4-gnutls-dev
         # also texlive-fonts-extra
         action :install
     end
+end
+
+
+link "/var/www/html/BBS" do
+    to "/home/biocbuild/public_html/BBS"
 end
 
 
