@@ -134,7 +134,8 @@ end
     texlive-bibtex-extra texlive-fonts-extra fortran77-compiler gfortran
     libreadline-dev libx11-dev libxt-dev texinfo apache2 libxml2-dev
     libcurl4-openssl-dev libcurl4-nss-dev Xvfb  libpng12-dev
-    libjpeg62-dev libcairo2-dev libcurl4-gnutls-dev
+    libjpeg62-dev libcairo2-dev libcurl4-gnutls-dev libtiff4-dev
+    tcl8.5-dev tk8.5-dev libicu-dev
 ).each do |pkg|
     package pkg do
         # this might timeout, but adding a 'timeout' here 
