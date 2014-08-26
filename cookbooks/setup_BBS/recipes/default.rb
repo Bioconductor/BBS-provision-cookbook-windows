@@ -27,6 +27,13 @@ directory bbsdir do
     action :create
 end
 
+directory "/home/biocbuild/.ssh" do
+    owner "biocbuild"
+    group "biocbuild"
+    mode "0755"
+    action :create
+end
+
 directory "/home/biocbuild/.BBS" do
     owner "biocbuild"
     group "biocbuild"
