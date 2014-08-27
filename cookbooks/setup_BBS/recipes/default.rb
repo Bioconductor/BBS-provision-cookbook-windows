@@ -269,7 +269,7 @@ end
 execute "javareconf" do
     action :run
     user "biocbuild"
-    command "#{bbs-dir}/R/bin/R CMD javareconf -e"
+    command "#{bbsdir}/R/bin/R CMD javareconf -e"
 end
 
 # install apache and set it up...
