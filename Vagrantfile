@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.vm.network "forwarded_port", guest: 80, host: 8066
     vb.memory = 4096
 
-    #vb.customize ["modifyvm", :id, "--memory", "2048"]
+    #vb.customize ["modifyvm", :id, "--memory", "4096"]
     vb.customize ["modifyvm", :id, "--cpus", "4"]   
     vb.customize ["modifyvm", :id, "--ioapic", "on"]
   end  
