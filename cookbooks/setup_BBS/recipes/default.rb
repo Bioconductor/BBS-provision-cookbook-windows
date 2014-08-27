@@ -142,7 +142,8 @@ end
     libreadline-dev libx11-dev libxt-dev texinfo apache2 libxml2-dev
     libcurl4-openssl-dev libcurl4-nss-dev Xvfb  libpng12-dev
     libjpeg62-dev libcairo2-dev libcurl4-gnutls-dev libtiff4-dev
-    tcl8.5-dev tk8.5-dev libicu-dev libgsl0ldbl
+    tcl8.5-dev tk8.5-dev libicu-dev libgsl0ldbl libgsl0-dev
+    libgtk2.0-dev gcj-4.8 openjdk-7-jdk
 ).each do |pkg|
     package pkg do
         # this might timeout, but adding a 'timeout' here 
@@ -263,6 +264,12 @@ execute "set R flags" do
     # this script still exits with code 1.
     command "/home/biocbuild/BBS/utils/R-fix-flags.sh"
     not_if {File.exists? "#{bbsdir}/R/etc/Makeconf.original"}
+end
+
+execute "javareconf" do
+    action :run
+    user "biocbuild"
+    command "#{bbs-dir}/R/bin/R CMD javareconf -e"
 end
 
 # install apache and set it up...
