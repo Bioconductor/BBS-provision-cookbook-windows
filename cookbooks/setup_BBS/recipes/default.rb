@@ -1,5 +1,10 @@
 require 'yaml'
 
+# FIXME - run apt-get update before doing other stuff, but read
+# https://stackoverflow.com/questions/9246786/how-can-i-get-chef-to-run-apt-get-update-before-running-other-recipes
+# and
+# https://wiki.opscode.com/display/chef/Evaluate+and+Run+Resources+at+Compile+Time;jsessionid=BBE750D0DC249823649B3F4F70F24C82
+
 yamlconfig = YAML.load_file "/vagrant/config.yml"
 
 rmajor = yamlconfig["r_version"].sub(/^R-/, "").split("").first
