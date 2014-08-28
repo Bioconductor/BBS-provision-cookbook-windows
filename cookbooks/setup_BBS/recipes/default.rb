@@ -293,3 +293,26 @@ end
 
 # put R in user path?
 
+# allow biocbuild to sudo?
+
+execute "put R in user path" do
+    user "biocbuild"
+    cwd "/home/biocbuild"
+    command "echo 'export PATH=\$PATH:/home/biocbuild/#{bbsdir}/R/bin' >> .bashrc"
+    not_if "grep -q #{bbsdir} /home/biocbuild/.bashrc"
+end
+
+remote_file "copy texmf config" do
+    path "/etc/texmf/texmf.d"
+    source "file:///vagrant/01bioc.cnf"
+    owner "root"
+    group "root"
+    mode "0644"
+end
+
+execute "update-texmf"
+    action :run
+    user "root"
+    command "update-texmf"
+end
+
