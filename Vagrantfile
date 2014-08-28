@@ -41,11 +41,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 # see https://groups.google.com/forum/#!topic/vagrant-up/3ABXsxm53Go
   config.vm.provider :aws do |aws, override|
     override.vm.box = "dummy"
-    aws.access_key_id = "XXXXX"
-    aws.secret_access_key = "YYYYY"
-    aws.keypair_name = "bioc-default"
-    aws.security_groups = "bioc_default"
-    aws.ami = "ZZZZZ"
+    aws.access_key_id = yamlconfig['access_key_id']
+    aws.secret_access_key = yamlconfig['secret_access_key']
+    aws.keypair_name = yamlconfig['keypair_name']
+    aws.security_groups = yamlconfig['security_groups']
+    aws.ami = yamlconfig['ami']
+    aws.tags = yamlconfig['tags']
+    aws.instance_type = yamlconfig['instance_type']
+    aws.instance_ready_timeout = 240
 
     override.ssh.username = "ubuntu"
     override.ssh.private_key_path = yamlconfig['private_key_path']
