@@ -10,7 +10,7 @@ yamlconfig = YAML.load_file "/vagrant/config.yml"
 rmajor = yamlconfig["r_version"].sub(/^R-/, "").split("").first
 
 execute "set hostname on aws" do
-    command "cat '127.0.0.1 bbsvm' >> /etc/hosts"
+    command "echo '127.0.0.1 bbsvm' >> /etc/hosts"
     only_if "curl -I http://169.254.169.254/latest/meta-data/ && grep -vw bbsvm /etc/hosts"
 end
 
