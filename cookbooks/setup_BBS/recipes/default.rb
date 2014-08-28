@@ -219,8 +219,8 @@ execute "check out forked BBS" do
     cwd "/home/biocbuild"
     action :run
     environment({"GIT_TRACE" => "1", "GIT_SSH" => "/vagrant/ssh"})
-    command "git clone git@zin1:/home/git/BBS-fork.git BBS"
-    #command "git clone git@zin1:/home/git/BBS-fork.git BBS"
+    command "git clone git@cloud.bioconductor.org:/home/git/BBS-fork.git BBS"
+    #command "git clone git@cloud.bioconductor.org:/home/git/BBS-fork.git BBS"
     not_if {File.exists? "/home/biocbuild/BBS"}
 end
 
@@ -236,7 +236,7 @@ end
 
 
 # check out (forked) BBS
-# from git@zin1:/home/git/BBS-fork.git
+# from git@cloud.bioconductor.org:/home/git/BBS-fork.git
 # set machine name in config.yml, make sure BBS knows about it 
 # and sees it as the main builder
 
