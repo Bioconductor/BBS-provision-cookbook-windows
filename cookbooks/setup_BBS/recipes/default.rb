@@ -11,7 +11,7 @@ rmajor = yamlconfig["r_version"].sub(/^R-/, "").split("").first
 
 execute "set hostname on aws" do
     command "echo '127.0.0.1 bbsvm' >> /etc/hosts"
-    only_if "curl -I http://169.254.169.254/latest/meta-data/ && grep -vw bbsvm /etc/hosts"
+    only_if "curl -I http://169.254.169.254/latest/meta-data/ && grep -vq bbsvm /etc/hosts"
 end
 
 
