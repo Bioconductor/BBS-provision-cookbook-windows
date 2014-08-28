@@ -310,7 +310,7 @@ remote_file "copy texmf config" do
     mode "0644"
 end
 
-execute "update-texmf"
+execute "update-texmf" do
     action :run
     user "root"
     command "update-texmf"
