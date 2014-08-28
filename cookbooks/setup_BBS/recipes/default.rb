@@ -148,7 +148,8 @@ end
     libcurl4-openssl-dev libcurl4-nss-dev Xvfb  libpng12-dev
     libjpeg62-dev libcairo2-dev libcurl4-gnutls-dev libtiff4-dev
     tcl8.5-dev tk8.5-dev libicu-dev libgsl0ldbl libgsl0-dev
-    libgtk2.0-dev gcj-4.8 openjdk-7-jdk
+    libgtk2.0-dev gcj-4.8 openjdk-7-jdk texlive-latex-extra
+    texlive-fonts-recommended
 ).each do |pkg|
     package pkg do
         # this might timeout, but adding a 'timeout' here 
