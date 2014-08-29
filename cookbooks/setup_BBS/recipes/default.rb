@@ -11,6 +11,8 @@ rmajor = yamlconfig["r_version"].sub(/^R-/, "").split("").first
 
 execute "set hostname on aws" do
     command "echo '127.0.0.1 bbsvm' >> /etc/hosts"
+    #FIXME, guard doesn't work, line keeps getting appended.
+    # does it also happen when not using AWS?
     only_if "curl -I http://169.254.169.254/latest/meta-data/ && grep -vq bbsvm /etc/hosts"
 end
 
