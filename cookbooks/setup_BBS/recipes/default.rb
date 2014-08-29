@@ -157,6 +157,7 @@ end
     tcl8.5-dev tk8.5-dev libicu-dev libgsl0ldbl libgsl0-dev
     libgtk2.0-dev gcj-4.8 openjdk-7-jdk texlive-latex-extra
     texlive-fonts-recommended pandoc libgl1-mesa-dev libglu1-mesa-dev
+    htop
 ).each do |pkg|
     package pkg do
         # this might timeout, but adding a 'timeout' here 
