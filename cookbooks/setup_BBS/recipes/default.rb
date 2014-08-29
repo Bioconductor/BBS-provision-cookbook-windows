@@ -310,7 +310,7 @@ execute "put R in user path" do
 end
 
 remote_file "copy texmf config" do
-    path "/etc/texmf/texmf.d"
+    path "/etc/texmf/texmf.d/01bioc.cnf"
     source "file:///vagrant/01bioc.cnf"
     owner "root"
     group "root"
