@@ -157,7 +157,7 @@ end
     tcl8.5-dev tk8.5-dev libicu-dev libgsl0ldbl libgsl0-dev
     libgtk2.0-dev gcj-4.8 openjdk-7-jdk texlive-latex-extra
     texlive-fonts-recommended pandoc libgl1-mesa-dev libglu1-mesa-dev
-    htop libgmp3-dev imagemagick unzip
+    htop libgmp3-dev imagemagick unzip libhdf5-dev
 ).each do |pkg|
     package pkg do
         # this might timeout, but adding a 'timeout' here 
@@ -306,7 +306,7 @@ end
 execute "put R in user path" do
     user "biocbuild"
     cwd "/home/biocbuild"
-    command "echo 'export PATH=\$PATH:/home/biocbuild/#{bbsdir}/R/bin' >> .bashrc"
+    command "echo 'export PATH=\$PATH:#{bbsdir}/R/bin' >> .bashrc"
     not_if "grep -q #{bbsdir} /home/biocbuild/.bashrc"
 end
 
