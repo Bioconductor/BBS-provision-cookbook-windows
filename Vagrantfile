@@ -44,11 +44,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     aws.access_key_id = yamlconfig['access_key_id']
     aws.secret_access_key = yamlconfig['secret_access_key']
     aws.keypair_name = yamlconfig['keypair_name']
+    if yamlconfig.has_key? 'subnet_id'
+      aws.subnet_id = yamlconfig['subnet_id']
+#      aws.security_group_ids = [yamlconfig['security_groups']]
+    else
+    end
     aws.security_groups = yamlconfig['security_groups']
     aws.ami = yamlconfig['ami']
     aws.tags = yamlconfig['tags']
     aws.instance_type = yamlconfig['instance_type']
     aws.instance_ready_timeout = 240
+    if yamlconfig.has_key? "availability_zone"
+      aws.availability_zone = yamlconfig['availability_zone']
+    end
 
     override.ssh.username = "ubuntu"
     override.ssh.private_key_path = yamlconfig['private_key_path']

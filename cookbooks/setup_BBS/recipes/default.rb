@@ -10,16 +10,16 @@ yamlconfig = YAML.load_file "/vagrant/config.yml"
 rmajor = yamlconfig["r_version"].sub(/^R-/, "").split("").first
 
 execute "set hostname on aws" do
-    command "echo '127.0.0.1 bbsvm' >> /etc/hosts"
+    command "echo '127.0.0.1 #{yamlconfig['hostname']}' >> /etc/hosts"
     #FIXME, guard doesn't work, line keeps getting appended.
     # does it also happen when not using AWS?
-    only_if "curl -I http://169.254.169.254/latest/meta-data/ && grep -vq bbsvm /etc/hosts"
+    only_if "curl -I http://169.254.169.254/latest/meta-data/ && grep -vq #{yamlconfig['hostname']} /etc/hosts"
 end
 
 
 execute "change time zone" do
     user "root"
-    command "echo 'America/Los_Angeles' > /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    command "echo '#{yamlconfig['timezone']}' > /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
     only_if "egrep -q 'UTC|GMT' /etc/timezone"
 end
 
@@ -207,7 +207,7 @@ end
 execute "add public key" do
     user "biocbuild"
     command "cat /vagrant/id_rsa.pub >> /home/biocbuild/.ssh/authorized_keys"
-    not_if "grep 'biocbuild@bbsvm' /home/biocbuild/.ssh/authorized_keys"
+    not_if "grep 'biocbuild@#{yamlconfig['hostname']}' /home/biocbuild/.ssh/authorized_keys"
 end
 
 # note, this wipes out crontab (but should only be run once)
@@ -292,6 +292,9 @@ end
 
 # test build by putting the following in crontab
 # (setting the time to be coming up soon)
+
+# the following comments have hostname hardcoded as 'bbsvm'
+# but it may be something different
 
 ## bbs-3.0-bioc
 # 20 16 * * * cd /home/biocbuild/BBS/3.0/bioc/bbsvm && ./prerun.sh >>/home/biocbuild/bbs-3.0-bioc/log/bbsvm.log 2>&1
