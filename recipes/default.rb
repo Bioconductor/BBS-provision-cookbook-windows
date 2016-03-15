@@ -1,3 +1,12 @@
+
+file "/tmp/foo" do
+  action :create
+  content node['bioc_version']
+end
+
+
+__END__
+
 require 'yaml'
 
 # FIXME - run apt-get update before doing other stuff, but read
@@ -160,7 +169,7 @@ end
     htop libgmp3-dev imagemagick unzip libhdf5-dev libncurses-dev
 ).each do |pkg|
     package pkg do
-        # this might timeout, but adding a 'timeout' here 
+        # this might timeout, but adding a 'timeout' here
         # causes an error. hmmm.
         # texlive-science seems to be the culprit
         # also texlive-fonts-extra
@@ -240,7 +249,7 @@ end
 
 # check out (forked) BBS
 # from git@cloud.bioconductor.org:/home/git/BBS-fork.git
-# set machine name in config.yml, make sure BBS knows about it 
+# set machine name in config.yml, make sure BBS knows about it
 # and sees it as the main builder
 
 # download and install R...
