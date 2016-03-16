@@ -5,7 +5,7 @@ driver:
 provisioner:
   #name: chef_solo
   name: chef_zero
-  #data_path: test/shared
+  data_path: test/shared
 
 # Uncomment the following verifier to leverage Inspec instead of Busser (the
 # default verifier)
