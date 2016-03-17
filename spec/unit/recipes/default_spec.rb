@@ -6,7 +6,7 @@
 
 require 'spec_helper'
 
-describe 'BBS-provision-cookbook::default' do
+describe 'BBS-provision-cookbook-windows::default' do
   context 'When all attributes are default, on an unspecified platform' do
     let(:chef_run) do
       runner = ChefSpec::ServerRunner.new

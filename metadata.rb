@@ -1,4 +1,4 @@
-name 'BBS-provision-cookbook'
+name 'BBS-provision-cookbook-windows'
 maintainer 'Dan Tenenbaum'
 maintainer_email 'dtenenba@fredhutch.org'
 license 'Artistic 2.0'

@@ -1,5 +1,5 @@
 
-file "/tmp/foo" do
+file "c:/foo" do
   action :create
   content node['bioc_version']
 end

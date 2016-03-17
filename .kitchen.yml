@@ -13,12 +13,12 @@ provisioner:
 #   name: inspec
 
 platforms:
-  - name: ubuntu-14.04
+  - name: windows-2012r2
 
 suites:
   - name: default
     run_list:
-      - recipe[BBS-provision-cookbook::default]
+      - recipe[BBS-provision-cookbook-windows::default]
     attributes:
       bioc_version: "3.3"
       r_version: "3.3"
