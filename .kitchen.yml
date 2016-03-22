@@ -25,4 +25,4 @@ suites:
       use_r_devel: true
       rtools_url: https://cran.rstudio.com/bin/windows/Rtools/Rtools33.exe
       rtools_ver_major: "33"
-      r_url: "https://cran.rstudio.com/bin/windows/base/R-devel-493-win.exe"
+      r_url: "https://s3.amazonaws.com/bioc-windows-setup/R-devel-493-win.exe"

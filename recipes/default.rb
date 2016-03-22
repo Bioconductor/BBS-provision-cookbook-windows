@@ -40,126 +40,17 @@ end
 #   code ". .\\otheruser.ps1"
 # end
 
+
+# IMPORTANT: The following needs to be done MANUALLY on the test
+# kitchen node (maybe not on production). See
+# https://discourse.chef.io/t/execute-resource-on-windows-as-alternate-user/8029
+# for more information.
 # powershell_script 'grant privilege' do
 #   code <<-EOH
 #   Import-Module c:\\Downloads\\UserRights.ps1
-#   Try { Grant-UserRight vagrant SeTrustedCredManAccessPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeTrustedCredManAccessPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeNetworkLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeNetworkLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeTcbPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeTcbPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeMachineAccountPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeMachineAccountPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeIncreaseQuotaPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeIncreaseQuotaPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeInteractiveLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeInteractiveLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeRemoteInteractiveLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeRemoteInteractiveLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeBackupPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeBackupPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeChangeNotifyPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeChangeNotifyPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeSystemtimePrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeSystemtimePrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeTimeZonePrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeTimeZonePrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeCreatePagefilePrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeCreatePagefilePrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeCreateTokenPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeCreateTokenPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeCreateGlobalPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeCreateGlobalPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeCreatePermanentPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeCreatePermanentPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeCreateSymbolicLinkPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeCreateSymbolicLinkPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeDebugPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeDebugPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeDenyNetworkLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeDenyNetworkLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeDenyBatchLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeDenyBatchLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeDenyServiceLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeDenyServiceLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeDenyInteractiveLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeDenyInteractiveLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeDenyRemoteInteractiveLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeDenyRemoteInteractiveLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeEnableDelegationPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeEnableDelegationPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeRemoteShutdownPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeRemoteShutdownPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeAuditPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeAuditPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeImpersonatePrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeImpersonatePrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeIncreaseWorkingSetPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeIncreaseWorkingSetPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeIncreaseBasePriorityPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeIncreaseBasePriorityPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeLoadDriverPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeLoadDriverPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeLockMemoryPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeLockMemoryPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeBatchLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeBatchLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeServiceLogonRight } Catch { }
-#   Try { Grant-UserRight biocbuild SeServiceLogonRight } Catch { }
-#   Try { Grant-UserRight vagrant SeSecurityPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeSecurityPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeRelabelPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeRelabelPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeSystemEnvironmentPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeSystemEnvironmentPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeManageVolumePrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeManageVolumePrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeProfileSingleProcessPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeProfileSingleProcessPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeSystemProfilePrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeSystemProfilePrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeUnsolicitedInputPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeUnsolicitedInputPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeUndockPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeUndockPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeAssignPrimaryTokenPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeAssignPrimaryTokenPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeRestorePrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeRestorePrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeShutdownPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeShutdownPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeSyncAgentPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeSyncAgentPrivilege } Catch { }
-#   Try { Grant-UserRight vagrant SeTakeOwnershipPrivilege } Catch { }
-#   Try { Grant-UserRight biocbuild SeTakeOwnershipPrivilege } Catch { }
+#   Grant-UserRight vagrant SeAssignPrimaryTokenPrivilege
 #   EOH
-  # code lambda do
-  #   x = "Import-Module c:\\Downloads\\UserRights.ps1\n"
-  #   privs = %W{SeTrustedCredManAccessPrivilege SeNetworkLogonRight SeTcbPrivilege SeMachineAccountPrivilege SeIncreaseQuotaPrivilege SeInteractiveLogonRight SeRemoteInteractiveLogonRight SeBackupPrivilege SeChangeNotifyPrivilege SeSystemtimePrivilege SeTimeZonePrivilege SeCreatePagefilePrivilege SeCreateTokenPrivilege SeCreateGlobalPrivilege SeCreatePermanentPrivilege SeCreateSymbolicLinkPrivilege SeDebugPrivilege SeDenyNetworkLogonRight SeDenyBatchLogonRight SeDenyServiceLogonRight SeDenyInteractiveLogonRight SeDenyRemoteInteractiveLogonRight SeEnableDelegationPrivilege SeRemoteShutdownPrivilege SeAuditPrivilege SeImpersonatePrivilege SeIncreaseWorkingSetPrivilege SeIncreaseBasePriorityPrivilege SeLoadDriverPrivilege SeLockMemoryPrivilege SeBatchLogonRight SeServiceLogonRight SeSecurityPrivilege SeRelabelPrivilege SeSystemEnvironmentPrivilege SeManageVolumePrivilege SeProfileSingleProcessPrivilege SeSystemProfilePrivilege SeUnsolicitedInputPrivilege SeUndockPrivilege SeAssignPrimaryTokenPrivilege SeRestorePrivilege SeShutdownPrivilege SeSyncAgentPrivilege SeTakeOwnershipPrivilege}
-  #   for priv in privs
-  #     x += "Grant-UserRight vagrant #{priv}\n"
-  #     x += "Grant-UserRight biocbuild #{priv}\n"
-  #   end
-  #   x
-  # end.call
-  # <<-EOH
-  # Import-Module c:\\Downloads\\UserRights.ps1
-  # #Grant-UserRight #{ENV['USERNAME']} SeAssignPrimaryTokenPrivilege
-  # #Grant-UserRight biocbuild SeAssignPrimaryTokenPrivilege
-  #
-  # EOH
-  # for priv in privs
-  #   code += "Grant-UserRight #{ENV['USERNAME']} #{priv}\n"
-  #   code += "Grant-UserRight biocbuild #{priv}\n"
-  # end
-  # code
 # end
-# Grant-UserRight #{ENV['USERNAME']} SeCreateTokenPrivilege
-# Grant-UserRight #{ENV['USERNAME']} SeImpersonatePrivilege
-# Grant-UserRight biocbuild SeCreateTokenPrivilege
-# Grant-UserRight biocbuild SeImpersonatePrivilege
-
 
 
 # install rtools first so it is first in PATH
@@ -250,14 +141,28 @@ execute "install R" do
 end
 
 
-ruby_block 'change permissions' do
+ruby_block 'ipconfig' do
   block do
-    Find.find("c://biocbld/bbs-#{node['bioc_version']}-bioc/R/library") do |path|
-      FileUtils.chmod 0777, path
-    end
+    Chef::ReservedNames::Win32::Security.add_account_right('vagrant', 'SeAssignPrimaryTokenPrivilege')
+    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+    cmd = shell_out!("ipconfig",
+      {
+        :user   => 'biocbuild',
+        :password   => 'in$secure11pasS'
+      }
+    )
+    puts cmd.stdout
   end
-  not_if {}
 end
+
+# ruby_block 'change permissions' do
+#   block do
+#     Find.find("c://biocbld/bbs-#{node['bioc_version']}-bioc/R/library") do |path|
+#       FileUtils.chmod 0777, path
+#     end
+#   end
+#   not_if {}
+# end
 
 
 # ruby_block 'install BiocInstaller' do
