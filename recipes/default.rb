@@ -1,9 +1,279 @@
+require 'find'
 
-file "c:/foo" do
-  action :create
-  content node['bioc_version']
+# FIXME set timezone
+
+file "c:\\env.txt" do
+  content node.chef_environment
+  # set to _default in test kitchen
 end
 
+file 'c:\\username.txt' do
+  content ENV['USERNAME']
+end
+
+user 'biocbuild' do
+  password "in$secure11pasS" # migrate this to data bag
+  action :create
+end
+
+# TODO give biocbuild the right to access system via remote desktop
+
+directory 'c:\\downloads' do
+  action :create
+  owner 'biocbuild'
+end
+
+directory "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc" do
+  action :create
+  owner "biocbuild"
+  recursive true
+end
+
+
+remote_file 'c:\\downloads\UserRights.ps1' do
+  source 'https://s3.amazonaws.com/bioc-windows-setup/UserRights.ps1'
+  owner 'biocbuild'
+end
+
+# powershell_script 'haha' do
+#   cwd "c:\\downloads"
+#   code ". .\\otheruser.ps1"
+# end
+
+# powershell_script 'grant privilege' do
+#   code <<-EOH
+#   Import-Module c:\\Downloads\\UserRights.ps1
+#   Try { Grant-UserRight vagrant SeTrustedCredManAccessPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeTrustedCredManAccessPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeNetworkLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeNetworkLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeTcbPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeTcbPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeMachineAccountPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeMachineAccountPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeIncreaseQuotaPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeIncreaseQuotaPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeInteractiveLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeInteractiveLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeRemoteInteractiveLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeRemoteInteractiveLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeBackupPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeBackupPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeChangeNotifyPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeChangeNotifyPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeSystemtimePrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeSystemtimePrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeTimeZonePrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeTimeZonePrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeCreatePagefilePrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeCreatePagefilePrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeCreateTokenPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeCreateTokenPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeCreateGlobalPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeCreateGlobalPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeCreatePermanentPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeCreatePermanentPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeCreateSymbolicLinkPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeCreateSymbolicLinkPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeDebugPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeDebugPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeDenyNetworkLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeDenyNetworkLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeDenyBatchLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeDenyBatchLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeDenyServiceLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeDenyServiceLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeDenyInteractiveLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeDenyInteractiveLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeDenyRemoteInteractiveLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeDenyRemoteInteractiveLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeEnableDelegationPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeEnableDelegationPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeRemoteShutdownPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeRemoteShutdownPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeAuditPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeAuditPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeImpersonatePrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeImpersonatePrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeIncreaseWorkingSetPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeIncreaseWorkingSetPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeIncreaseBasePriorityPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeIncreaseBasePriorityPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeLoadDriverPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeLoadDriverPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeLockMemoryPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeLockMemoryPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeBatchLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeBatchLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeServiceLogonRight } Catch { }
+#   Try { Grant-UserRight biocbuild SeServiceLogonRight } Catch { }
+#   Try { Grant-UserRight vagrant SeSecurityPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeSecurityPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeRelabelPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeRelabelPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeSystemEnvironmentPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeSystemEnvironmentPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeManageVolumePrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeManageVolumePrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeProfileSingleProcessPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeProfileSingleProcessPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeSystemProfilePrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeSystemProfilePrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeUnsolicitedInputPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeUnsolicitedInputPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeUndockPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeUndockPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeAssignPrimaryTokenPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeAssignPrimaryTokenPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeRestorePrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeRestorePrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeShutdownPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeShutdownPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeSyncAgentPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeSyncAgentPrivilege } Catch { }
+#   Try { Grant-UserRight vagrant SeTakeOwnershipPrivilege } Catch { }
+#   Try { Grant-UserRight biocbuild SeTakeOwnershipPrivilege } Catch { }
+#   EOH
+  # code lambda do
+  #   x = "Import-Module c:\\Downloads\\UserRights.ps1\n"
+  #   privs = %W{SeTrustedCredManAccessPrivilege SeNetworkLogonRight SeTcbPrivilege SeMachineAccountPrivilege SeIncreaseQuotaPrivilege SeInteractiveLogonRight SeRemoteInteractiveLogonRight SeBackupPrivilege SeChangeNotifyPrivilege SeSystemtimePrivilege SeTimeZonePrivilege SeCreatePagefilePrivilege SeCreateTokenPrivilege SeCreateGlobalPrivilege SeCreatePermanentPrivilege SeCreateSymbolicLinkPrivilege SeDebugPrivilege SeDenyNetworkLogonRight SeDenyBatchLogonRight SeDenyServiceLogonRight SeDenyInteractiveLogonRight SeDenyRemoteInteractiveLogonRight SeEnableDelegationPrivilege SeRemoteShutdownPrivilege SeAuditPrivilege SeImpersonatePrivilege SeIncreaseWorkingSetPrivilege SeIncreaseBasePriorityPrivilege SeLoadDriverPrivilege SeLockMemoryPrivilege SeBatchLogonRight SeServiceLogonRight SeSecurityPrivilege SeRelabelPrivilege SeSystemEnvironmentPrivilege SeManageVolumePrivilege SeProfileSingleProcessPrivilege SeSystemProfilePrivilege SeUnsolicitedInputPrivilege SeUndockPrivilege SeAssignPrimaryTokenPrivilege SeRestorePrivilege SeShutdownPrivilege SeSyncAgentPrivilege SeTakeOwnershipPrivilege}
+  #   for priv in privs
+  #     x += "Grant-UserRight vagrant #{priv}\n"
+  #     x += "Grant-UserRight biocbuild #{priv}\n"
+  #   end
+  #   x
+  # end.call
+  # <<-EOH
+  # Import-Module c:\\Downloads\\UserRights.ps1
+  # #Grant-UserRight #{ENV['USERNAME']} SeAssignPrimaryTokenPrivilege
+  # #Grant-UserRight biocbuild SeAssignPrimaryTokenPrivilege
+  #
+  # EOH
+  # for priv in privs
+  #   code += "Grant-UserRight #{ENV['USERNAME']} #{priv}\n"
+  #   code += "Grant-UserRight biocbuild #{priv}\n"
+  # end
+  # code
+# end
+# Grant-UserRight #{ENV['USERNAME']} SeCreateTokenPrivilege
+# Grant-UserRight #{ENV['USERNAME']} SeImpersonatePrivilege
+# Grant-UserRight biocbuild SeCreateTokenPrivilege
+# Grant-UserRight biocbuild SeImpersonatePrivilege
+
+
+
+# install rtools first so it is first in PATH
+
+remote_file "c:\\downloads\\#{node['rtools_url'].split('/').last}" do
+  source node["rtools_url"]
+  owner 'biocbuild'
+end
+
+
+# execute "change ownership" do
+#   command "takeown /U biocbuild /R /F .\\R /S #{node['hostname']} > NUL 2>&1"
+#   cwd "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc"
+#
+# end
+
+
+# ruby_block 'install rtools' do
+#   block do
+#     Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+#     command_to_run = "c:\\downloads\\#{node['rtools_url'].split('/').last} /sp- /verysilent /norestart"
+#     shell_out(command_to_run,
+#       {
+#         :user   => 'biocbuild',
+#         :password   => 'in$secure11pasS',
+#         :domain => node['hostname']
+#       }
+#     )
+    # rtools_install = Mixlib::ShellOut.new( \
+    # ".\\#{node['rtools_url'].split('/').last} /sp- /silent /norestart",
+    # cwd: 'c:\\downloads',
+    # user: "biocbuild",
+    # domain:  node['hostname'],
+    # password:  "in$secure11pasS")
+    # rtools_install.run_command
+#   end
+#   not_if File.exists?("c:\\Rtools")
+# end
+
+execute 'install Rtools' do
+  command ".\\#{node['rtools_url'].split('/').last} /sp- /silent /norestart"
+  cwd 'c:\\downloads'
+  not_if { File.exists?("c:\\Rtools") }
+end
+
+
+
+env 'PATH' do
+  value "c:\\Rtools\\bin;C:\\Rtools\\mingw_32\\bin;C:\\Rtools\\mingw_64\\bin;#{ENV['PATH']}"
+  # don't trust action :modify!
+  action :create # not really needed, :create is the default action
+  only_if { (ENV['PATH'] =~ /Rtools/i).nil? }
+end
+
+env 'BINPREF' do
+  value "C:/Rtools/mingw_$(WIN)/bin/"
+  action :create
+  only_if {  ['_default', 'new_toolchain'].include? node.chef_environment and
+    not ENV.has_key? 'BINPREF' }
+  # only_if do
+  #   if ['_default', 'new_toolchain'].include? node.chef_environment
+  #     unless ENV.has_key? 'BINPREF'
+  #       true
+  #     end
+  #   end
+  #   false
+  # end
+end
+
+file 'c:\\path.txt' do # for testing
+  content ENV['PATH']
+end
+
+
+# install R
+
+remote_file "c:\\downloads\\#{node['r_url'].split('/').last}" do
+  source node['r_url']
+  owner "biocbuild"
+end
+
+
+execute "install R" do
+  command ".\\#{node['r_url'].split('/').last} /verysilent /dir=c:\\biocbld\\bbs-3.3-bioc\\R /sp- /norestart /NOICONS /TASKS=''"
+  cwd "c:\\downloads"
+  # what if we really do want to reinstall/update R? separate recipe?
+  not_if {File.exists? "c:\\biocbuild\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R.exe"}
+end
+
+
+ruby_block 'change permissions' do
+  block do
+    Find.find("c://biocbld/bbs-#{node['bioc_version']}-bioc/R/library") do |path|
+      FileUtils.chmod 0777, path
+    end
+  end
+  not_if {}
+end
+
+
+# ruby_block 'install BiocInstaller' do
+#   block do
+#     Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+#     command_to_run = "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R -e source('https://bioconductor.org/biocLite.R')"
+#     shell_out(command_to_run,
+#       {
+#         :user   => 'biocbuild',
+#         :password   => 'in$secure11pasS',
+#         :domain => node['hostname']
+#       }
+#     )
+#   end
+#   not_if { File.exists? "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\library\\BiocInstaller"}
+# end
 
 __END__
 

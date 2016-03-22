@@ -5,19 +5,30 @@
 require_relative 'c:\users\vagrant\AppData\Local\Temp\kitchen\data\spec_helper'
 
 describe "BBS-provision-cookbook-windows::default" do
-  # describe package('git') do
-  #   it {should be_installed}
-  # end
-
-  # argh, this fails, see
-  # https://discourse.chef.io/t/should-exist-file-test-fails-on-windows-kitchen-serverspec/8008
-  describe file('c:\\foo') do
+  describe user('biocbuild') do
     it { should exist }
   end
 
-  describe file('c:\\bar') do
-    it { should_not exist }
+  describe file('c:\\downloads') do
+    it {should exist}
+    it {should be_directory}
+    # this doesn't work: (why?)
+    # with or without hostname. various permutations of backslashes...
+    #it {should be_owned_by 'WIN-L976DG4D6CC\biocbuild'}
+end
+
+
+  describe file('c:\\downloads\\Rtools33.exe') do
+    it {should exist}
   end
 
+  describe file('c:\\Rtools') do
+    it {should exist}
+    it {should be_directory}
+  end
+
+  describe file('c:\\path.txt') do
+    its(:content) { should match /Rtools/i}
+  end
 
 end

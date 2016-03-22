@@ -23,3 +23,6 @@ suites:
       bioc_version: "3.3"
       r_version: "3.3"
       use_r_devel: true
+      rtools_url: https://cran.rstudio.com/bin/windows/Rtools/Rtools33.exe
+      rtools_ver_major: "33"
+      r_url: "https://cran.rstudio.com/bin/windows/base/R-devel-493-win.exe"
