@@ -29,6 +29,13 @@ directory "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc" do
   recursive true
 end
 
+directory "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp" do
+  action :create
+  owner "biocbuild"
+  recursive true
+end
+
+
 
 remote_file 'c:\\downloads\UserRights.ps1' do
   source 'https://s3.amazonaws.com/bioc-windows-setup/UserRights.ps1'
@@ -105,6 +112,20 @@ env 'PATH' do
   only_if { (ENV['PATH'] =~ /Rtools/i).nil? }
 end
 
+env 'TEMP' do
+  value "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp"
+  # don't trust action :modify!
+  action :create # not really needed, :create is the default action
+end
+
+env 'TMP' do
+  value "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp"
+  # don't trust action :modify!
+  action :create # not really needed, :create is the default action
+end
+
+
+
 env 'BINPREF' do
   value "C:/Rtools/mingw_$(WIN)/bin/"
   action :create
@@ -133,6 +154,22 @@ remote_file "c:\\downloads\\#{node['r_url'].split('/').last}" do
 end
 
 
+# ruby_block 'install R as biocbuild' do
+#   block do
+#     Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+#     cmd = shell_out!("c:\\downloads\\#{node['r_url'].split('/').last}  /verysilent /dir=c:\\biocbld\\bbs-3.3-bioc\\R /sp- /norestart /NOICONS /TASKS=''",
+#       {
+#         :user   => 'biocbuild',
+#         :password   => 'in$secure11pasS'
+#       }
+#     )
+#     puts cmd.stdout
+#
+#   end
+#   # what if we really do want to reinstall/update R? separate recipe?
+#   not_if {File.exists? "c:\\biocbuild\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R.exe"}
+# end
+
 execute "install R" do
   command ".\\#{node['r_url'].split('/').last} /verysilent /dir=c:\\biocbld\\bbs-3.3-bioc\\R /sp- /norestart /NOICONS /TASKS=''"
   cwd "c:\\downloads"
@@ -140,20 +177,24 @@ execute "install R" do
   not_if {File.exists? "c:\\biocbuild\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R.exe"}
 end
 
-
-ruby_block 'ipconfig' do
-  block do
-    Chef::ReservedNames::Win32::Security.add_account_right('vagrant', 'SeAssignPrimaryTokenPrivilege')
-    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-    cmd = shell_out!("ipconfig",
-      {
-        :user   => 'biocbuild',
-        :password   => 'in$secure11pasS'
-      }
-    )
-    puts cmd.stdout
-  end
+execute "open up permissions of R files" do
+  command "icacls c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R /grant biocbuild:(OI)(CI)F"
+  not_if "icacls c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R |grep -q biocbuild"
 end
+
+# ruby_block 'ipconfig' do
+#   block do
+#     Chef::ReservedNames::Win32::Security.add_account_right('vagrant', 'SeAssignPrimaryTokenPrivilege')
+#     Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+#     cmd = shell_out!("ipconfig",
+#       {
+#         :user   => 'biocbuild',
+#         :password   => 'in$secure11pasS'
+#       }
+#     )
+#     puts cmd.stdout
+#   end
+# end
 
 # ruby_block 'change permissions' do
 #   block do
@@ -165,20 +206,26 @@ end
 # end
 
 
-# ruby_block 'install BiocInstaller' do
-#   block do
-#     Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-#     command_to_run = "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R -e source('https://bioconductor.org/biocLite.R')"
-#     shell_out(command_to_run,
-#       {
-#         :user   => 'biocbuild',
-#         :password   => 'in$secure11pasS',
-#         :domain => node['hostname']
-#       }
-#     )
-#   end
-#   not_if { File.exists? "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\library\\BiocInstaller"}
-# end
+ruby_block 'install BiocInstaller' do
+  block do
+    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+    command_to_run = "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R -e source('https://bioconductor.org/biocLite.R')"
+    # command_to_run = "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R -e print(tempdir())"
+    cmd = shell_out(command_to_run,
+      {
+        user:  'biocbuild',
+        password:  'in$secure11pasS',
+        domain: node['hostname'],
+        env: {TMP: "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp",
+              TEMP: "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp",
+              TMPDIR: "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp"}
+      }
+    )
+    puts cmd.stdout
+    puts cmd.stderr
+  end
+  not_if { File.exists? "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\library\\BiocInstaller"}
+end
 
 __END__
 
