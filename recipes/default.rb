@@ -148,10 +148,10 @@ end
 
 # install R
 
-remote_file "c:\\downloads\\#{node['r_url'].split('/').last}" do
-  source node['r_url']
-  owner "biocbuild"
-end
+# remote_file "c:\\downloads\\#{node['r_url'].split('/').last}" do
+#   source node['r_url']
+#   owner "biocbuild"
+# end
 
 
 # ruby_block 'install R as biocbuild' do
@@ -170,12 +170,19 @@ end
 #   not_if {File.exists? "c:\\biocbuild\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R.exe"}
 # end
 
-execute "install R" do
-  command ".\\#{node['r_url'].split('/').last} /verysilent /dir=c:\\biocbld\\bbs-3.3-bioc\\R /sp- /norestart /NOICONS /TASKS=''"
-  cwd "c:\\downloads"
-  # what if we really do want to reinstall/update R? separate recipe?
-  not_if {File.exists? "c:\\biocbuild\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R.exe"}
+# what if we really do want to reinstall/update R? separate recipe?
+windows_package "R" do
+  options " /verysilent /dir=c:\\biocbld\\bbs-3.3-bioc\\R /sp- /norestart /NOICONS /TASKS=''"
+  source node['r_url']
+  installer_type :inno
 end
+
+# execute "install R" do
+#   command ".\\#{node['r_url'].split('/').last} /verysilent /dir=c:\\biocbld\\bbs-3.3-bioc\\R /sp- /norestart /NOICONS /TASKS=''"
+#   cwd "c:\\downloads"
+#   # what if we really do want to reinstall/update R? separate recipe?
+#   not_if {File.exists? "c:\\biocbuild\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R.exe"}
+# end
 
 execute "open up permissions of R files" do
   command "icacls c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R /grant biocbuild:(OI)(CI)F"
