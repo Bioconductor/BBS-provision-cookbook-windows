@@ -1,6 +1,17 @@
 require 'find'
 
-# FIXME set timezone
+if node["reldev"] == "devel"
+  reldev = :dev
+elsif node["reldev"] == "release"
+  reldev = :rel
+else
+  raise "are the bbs_devel and bbs_release roles defined?"
+end
+
+bioc_version = node['bioc_version'][reldev]
+r_version = node['r_version'][reldev]
+
+# FIXME set timezone NY (East coast)
 
 file "c:\\env.txt" do
   content node.chef_environment
@@ -23,18 +34,19 @@ directory 'c:\\downloads' do
   owner 'biocbuild'
 end
 
-directory "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc" do
+bbs_dir = "c:\\biocbld\\bbs-#{bioc_version}-bioc"
+
+directory "#{bbs_dir}" do
   action :create
   owner "biocbuild"
   recursive true
 end
 
-directory "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp" do
+directory "#{bbs_dir}\\temp" do
   action :create
   owner "biocbuild"
   recursive true
 end
-
 
 
 remote_file 'c:\\downloads\UserRights.ps1' do
@@ -62,15 +74,16 @@ end
 
 # install rtools first so it is first in PATH
 
-remote_file "c:\\downloads\\#{node['rtools_url'].split('/').last}" do
-  source node["rtools_url"]
+rtools_exe = node['rtools_url'][reldev].split('/').last
+
+remote_file "c:\\downloads\\#{rtools_exe}" do
+  source node['rtools_url'][reldev]
   owner 'biocbuild'
 end
 
-
 # execute "change ownership" do
 #   command "takeown /U biocbuild /R /F .\\R /S #{node['hostname']} > NUL 2>&1"
-#   cwd "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc"
+#   cwd "#{bbs_dir}"
 #
 # end
 
@@ -98,12 +111,10 @@ end
 # end
 
 execute 'install Rtools' do
-  command ".\\#{node['rtools_url'].split('/').last} /sp- /silent /norestart"
+  command ".\\#{rtools_exe} /sp- /silent /norestart"
   cwd 'c:\\downloads'
   not_if { File.exists?("c:\\Rtools") }
 end
-
-
 
 env 'PATH' do
   value "c:\\Rtools\\bin;C:\\Rtools\\mingw_32\\bin;C:\\Rtools\\mingw_64\\bin;#{ENV['PATH']}"
@@ -113,17 +124,16 @@ env 'PATH' do
 end
 
 env 'TEMP' do
-  value "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp"
+  value "#{bbs_dir}\\temp"
   # don't trust action :modify!
   action :create # not really needed, :create is the default action
 end
 
 env 'TMP' do
-  value "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp"
+  value "#{bbs_dir}\\temp"
   # don't trust action :modify!
   action :create # not really needed, :create is the default action
 end
-
 
 
 env 'BINPREF' do
@@ -144,7 +154,6 @@ end
 file 'c:\\path.txt' do # for testing
   content ENV['PATH']
 end
-
 
 # install R
 
@@ -167,13 +176,13 @@ end
 #
 #   end
 #   # what if we really do want to reinstall/update R? separate recipe?
-#   not_if {File.exists? "c:\\biocbuild\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R.exe"}
+#   not_if {File.exists? "c:\\biocbuild\\bbs-#{bioc_version}-bioc\\R\\bin\\R.exe"}
 # end
 
 # what if we really do want to reinstall/update R? separate recipe?
 windows_package "R" do
-  options " /verysilent /dir=c:\\biocbld\\bbs-3.3-bioc\\R /sp- /norestart /NOICONS /TASKS=''"
-  source node['r_url']
+  options " /verysilent /dir=#{bbs_dir}\\R /sp- /norestart /NOICONS /TASKS=''"
+  source node['r_url'][reldev]
   installer_type :inno
 end
 
@@ -181,12 +190,12 @@ end
 #   command ".\\#{node['r_url'].split('/').last} /verysilent /dir=c:\\biocbld\\bbs-3.3-bioc\\R /sp- /norestart /NOICONS /TASKS=''"
 #   cwd "c:\\downloads"
 #   # what if we really do want to reinstall/update R? separate recipe?
-#   not_if {File.exists? "c:\\biocbuild\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R.exe"}
+#   not_if {File.exists? "c:\\biocbuild\\bbs-#{bioc_version}-bioc\\R\\bin\\R.exe"}
 # end
 
 execute "open up permissions of R files" do
-  command "icacls c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R /grant biocbuild:(OI)(CI)F"
-  not_if "icacls c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R |grep -q biocbuild"
+  command "icacls #{bbs_dir}\\R /grant biocbuild:(OI)(CI)F"
+  not_if "icacls #{bbs_dir}\\R |grep -q biocbuild"
 end
 
 # ruby_block 'ipconfig' do
@@ -205,7 +214,7 @@ end
 
 # ruby_block 'change permissions' do
 #   block do
-#     Find.find("c://biocbld/bbs-#{node['bioc_version']}-bioc/R/library") do |path|
+#     Find.find("c://biocbld/bbs-#{bioc_version}-bioc/R/library") do |path|
 #       FileUtils.chmod 0777, path
 #     end
 #   end
@@ -216,22 +225,22 @@ end
 ruby_block 'install BiocInstaller' do
   block do
     Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-    command_to_run = "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R -e source('https://bioconductor.org/biocLite.R')"
-    # command_to_run = "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\bin\\R -e print(tempdir())"
+    command_to_run = "#{bbs_dir}\\R\\bin\\R -e source('https://bioconductor.org/biocLite.R')"
+    # command_to_run = "#{bbs_dir}\\R\\bin\\R -e print(tempdir())"
     cmd = shell_out(command_to_run,
       {
         user:  'biocbuild',
         password:  'in$secure11pasS',
         domain: node['hostname'],
-        env: {TMP: "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp",
-              TEMP: "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp",
-              TMPDIR: "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\temp"}
+        env: {TMP: "#{bbs_dir}\\temp",
+              TEMP: "#{bbs_dir}\\temp",
+              TMPDIR: "#{bbs_dir}\\temp"}
       }
     )
     puts cmd.stdout
     puts cmd.stderr
   end
-  not_if { File.exists? "c:\\biocbld\\bbs-#{node['bioc_version']}-bioc\\R\\library\\BiocInstaller"}
+  not_if { File.exists? "#{bbs_dir}\\R\\library\\BiocInstaller"}
 end
 
 __END__

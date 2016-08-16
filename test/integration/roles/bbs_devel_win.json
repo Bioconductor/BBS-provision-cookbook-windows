@@ -1,0 +1,9 @@
+{
+  "name": "bbs_devel_win",
+  "default_attributes": {
+    "reldev": "devel"
+  },
+  "run_list": [
+    "recipe[BBS-provision-cookbook-windows::default]"
+  ]
+}
